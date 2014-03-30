@@ -17,7 +17,7 @@ def serve_base():
 @app.route('/projects')
 def list_projects():
     """Return all projects as JSON"""
-    projects = [p.serialized for p in Project.all]
+    projects = [p.name for p in Project.all]
     return return_json( projects )
 
 @app.route('/create_project/<name>', methods=['POST'])
