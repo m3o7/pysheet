@@ -4,8 +4,11 @@ import project as p
 class MetaProject(type):
     """Metaclass for a project, which contains some convienience methods"""
 
-    __ext__ = 'pys.proj'
+    __ext__ = 'pys_proj'
     __path__ = '.'
+
+    # { name: class } - every class instance registers itself here
+    __project_classes__ = {}
 
     @property
     def all(self):
@@ -24,20 +27,13 @@ class MetaProject(type):
 
     def __create_new_project_folder__(self, name):
         """Create a new project path"""
-        foldername = '{0}.{1}'.format(name, MetaProject.__ext__)
+        foldername = '{0}_{1}'.format(name, MetaProject.__ext__)
         path = os.path.join(MetaProject.__path__, foldername)
 
-        # notify user if the project already exists
-        try:
-            os.mkdir(path) # create a new folder
-            base_file = os.path.join(path, '__init__.py')
-            open(base_file, 'w').close() # create a new file
-        except OSError as err:
-            if err.errno == 17:
-                # more meaningful error message
-                raise Exception('project already exists')
-            else:
-                raise
+        # TODO: catch, so user can be notified if project already exists
+        os.mkdir(path) # create a new folder
+        base_file = os.path.join(path, '__init__.py')
+        open(base_file, 'w').close() # create a new file
         return path
 
     def create_new_project(self, name):
@@ -47,5 +43,9 @@ class MetaProject(type):
         return p.Project(path=path)
 
     def get(self, name):
-        """Return the Project by name"""
+        """Return the Project by its name"""
         return (p for p in self.all if p.name == name).next()
+
+    def register(self, klass):
+        """Project-instances register itself here"""
+        self.__project_classes__[klass.package_name] = klass
