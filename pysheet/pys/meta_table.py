@@ -1,6 +1,7 @@
 import pkgutil
-import table as t
 from collections import defaultdict
+import project
+import os
 
 class MetaTable(type):
 
@@ -20,9 +21,14 @@ class MetaTable(type):
             pass
         return klass
 
-    @property
-    def all(cls):
-        return MetaTable.__table_classes__
+    def create_new_table(cls, package_name, table_name):
+        """Create new table file"""
+        path = project.Project.get(package_name).path
+        filename = '{0}.py'.format(table_name)
+        fullpath = os.path.join(path, filename)
+        with open(fullpath, 'w') as table:
+            pass
+        return fullpath
 
     def import_tables(cls, package_name):
         """Return all tables of a module"""

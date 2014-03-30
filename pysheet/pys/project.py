@@ -1,4 +1,5 @@
 import os
+import table
 from meta_project import MetaProject
 
 class Project(object):
@@ -33,6 +34,5 @@ class Project(object):
     def tables(self):
         """Return all table-classes"""
         # import all tables of a module
-        import table
         tables = table.Table.import_tables(package_name=self.package_name)
         return tables

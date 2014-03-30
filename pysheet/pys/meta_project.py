@@ -43,7 +43,3 @@ class MetaProject(type):
     def get(cls, name):
         """Return the Project by its name"""
         return (p for p in cls.all if p.name == name).next()
-
-    def get_project_klass(cls, package_name):
-        """Return project-instance by package_name"""
-        return cls.__instances__.get(package_name)
