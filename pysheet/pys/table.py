@@ -10,9 +10,14 @@ class Table(object):
         return self.run()
 
     def get_run_source(self):
-        """Return the source-code of the run-method"""
-        source, _ = inspect.getsourcelines(self.run)
-        return source
+        """Return the source-code of the run-method and remove the indentation"""
+        # load source code
+        lines, _ = inspect.getsourcelines(self.run)
+
+        # remove indentation
+        header_spaces = len(lines[0].split('def')[0])
+        lines = [l[header_spaces:] for l in lines]
+        return lines
 
     def get_class_source(self):
         """Return the source-code of the entire class"""
