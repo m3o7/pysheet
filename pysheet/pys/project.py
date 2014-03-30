@@ -6,12 +6,19 @@ class Project(object):
 
     __metaclass__ = MetaProject
 
+    # { name : instance } - to enforce Singleton on per package basis
+    __instances__ = {} 
+
+    def __new__(cls, *args, **kwargs):
+        """Enforce singleton on per-package basis"""
+        _, package_name = os.path.split(kwargs.get('path'))
+        if package_name not in cls.__instances__:
+            cls.__instances__[package_name] = super(Project, cls).__new__(cls, *args, **kwargs)
+        return cls.__instances__[package_name]
+
     def __init__(self, path):
         self.__tables__ = {} # { table-name: table-class}
         self.path = path
-
-        # self register
-        Project.register(self)
 
     def __repr__(self):
         return '<{0}: {1}>'.format(self.__class__.__name__, self.name)
@@ -25,8 +32,8 @@ class Project(object):
     @property
     def package_name(self):
         """Return the python-package name of the project"""
-        _, filename = os.path.split(self.path)
-        return filename
+        _, package_name = os.path.split(self.path)
+        return package_name
 
     def register_table(self, table, name):
         """Register table with this project-instance"""

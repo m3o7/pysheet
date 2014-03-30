@@ -12,7 +12,7 @@ class MetaTable(type):
         project = p.Project.get_project_klass(module)
         try:
             project.register_table(klass, name)
-        except AttributeError:
+        except AttributeError as err:
             # Table class has no corresponding project
             pass
         return klass

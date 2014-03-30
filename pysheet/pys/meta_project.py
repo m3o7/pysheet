@@ -8,7 +8,6 @@ class MetaProject(type):
     __path__ = '.'
 
     # { name: class } - every class instance registers itself here
-    __project_instances__ = {}
 
     @property
     def all(cls):
@@ -44,12 +43,14 @@ class MetaProject(type):
 
     def get(cls, name):
         """Return the Project by its name"""
-        return (p for p in cls.all if p.name == name).next()
-
-    def register(cls, klass):
-        """Project-instances register itself here"""
-        cls.__project_instances__[klass.package_name] = klass
+        klass = cls.__instances__.get("{0}_{1}".format(name, MetaProject.__ext__))
+        if klass is not None:
+            # instance still exists in memory
+            return klass
+        else:
+            # create new instance
+            return (p for p in cls.all if p.name == name).next()
 
     def get_project_klass(cls, package_name):
         """Return project-instance by package_name"""
-        return cls.__project_instances__.get(package_name)
+        return cls.__instances__.get(package_name)
