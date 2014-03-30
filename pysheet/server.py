@@ -42,23 +42,23 @@ def create_table(project, table):
     table = Table.create_new_table(package_name=project, table_name=table)
     return return_json( table )
 
-@app.route('/project/<project>/<table>/source')
-def get_table_run_source(project, table):
+@app.route('/project/<project>/<table>/source/<method>')
+def get_table_method_source(project, table, method):
     table = Project.get(name=project).get_table(name=table)
-    return return_data( data=table().get_run_source(), 
+    return return_data( data=table().get_source(method=method), 
                         mimetype='text/x-script.phyton')
 
 @app.route('/project/<project>/<table>/update_source', methods=['POST'])
-def update_run_source(project, table):
+def update_table_method_source(project, table):
     table = Project.get(name=project).get_table(name=table)
     new_source = flask.request.data
     table().update_source(new_source=new_source)
     return 'ok'
 
-@app.route('/project/<project>/<table>/source_full')
-def get_table_full_source(project, table):
+@app.route('/project/<project>/<table>/source')
+def get_table_source(project, table):
     table = Project.get(name=project).get_table(name=table)
-    return return_data( data=table().get_full_source(), 
+    return return_data( data=table().get_source(), 
                         mimetype='text/x-script.phyton')
 
 @app.route('/project/<project>/<table>')

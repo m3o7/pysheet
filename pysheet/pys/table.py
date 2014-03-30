@@ -9,21 +9,30 @@ class Table(object):
         """Encapsulate run method"""
         return self.run()
 
-    def get_run_source(self):
-        """Return the source-code of the run-method and remove the indentation"""
+    def __get_class_source__(self):
+        """Return the source-code of the entire table-file"""
+        full_path = inspect.getsourcefile(self.__class__)
+        with open(full_path, 'r') as _file:
+            source = _file.readlines()
+        return source
+
+    def __get_method_source__(self, method):
+        """Return source code of a method"""
         # load source code
-        lines, _ = inspect.getsourcelines(self.run)
+        func = getattr(self, method)
+        lines, _ = inspect.getsourcelines(func)
 
         # remove indentation
         header_spaces = len(lines[0].split('def')[0])
         lines = [l[header_spaces:] for l in lines]
         return lines
 
-    def get_full_source(self):
-        """Return the source-code of the entire table-file"""
-        full_path = inspect.getsourcefile(self.__class__)
-        with open(full_path, 'r') as _file:
-            source = _file.readlines()
+    def get_source(self, method=None):
+        """Return the source-code of the run-method and remove the indentation"""
+        if method is None:
+            source = self.__get_class_source__()
+        else:
+            source = self.__get_method_source__(method=method)
         return source
 
     def run(self):
