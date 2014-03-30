@@ -15,16 +15,20 @@ def serve_base():
     return fl.render_template('base.html.template')
 
 @app.route('/projects')
-def serve_projects():
+def list_projects():
     """Return all projects as JSON"""
     projects = [p.serialized for p in Project.all]
-    return return_json(projects)
+    return return_json( projects )
 
 @app.route('/create_project/<name>', methods=['POST'])
 def create_project(name):
     """Create a new project and return its name"""
     project = Project.create_new_project(name=name)
-    return return_json(project.serialized)
+    return return_json( project.serialized )
+
+@app.route('/project/<name>')
+def list_tables(name):
+    return return_json( Project.get(name=name).serialized )
 
 if __name__ == "__main__":
     app.run(debug=True)
