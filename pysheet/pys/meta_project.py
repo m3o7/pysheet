@@ -4,8 +4,8 @@ import project as p
 class MetaProject(type):
     """Metaclass for a project, which contains some convienience methods"""
 
-    __ext__ = 'pys_proj'
-    __path__ = '.'
+    __ext__ = '_pys_proj'
+    __path__ = '.' # current directory
 
     # { name: class } - every class instance registers itself here
 
@@ -26,8 +26,7 @@ class MetaProject(type):
 
     def __create_new_project_folder__(cls, name):
         """Create a new project path"""
-        foldername = '{0}_{1}'.format(name, MetaProject.__ext__)
-        path = os.path.join(MetaProject.__path__, foldername)
+        path = os.path.join(MetaProject.__path__, name)
 
         # TODO: catch, so user can be notified if project already exists
         os.mkdir(path) # create a new folder
@@ -43,13 +42,7 @@ class MetaProject(type):
 
     def get(cls, name):
         """Return the Project by its name"""
-        klass = cls.__instances__.get("{0}_{1}".format(name, MetaProject.__ext__))
-        if klass is not None:
-            # instance still exists in memory
-            return klass
-        else:
-            # create new instance
-            return (p for p in cls.all if p.name == name).next()
+        return (p for p in cls.all if p.name == name).next()
 
     def get_project_klass(cls, package_name):
         """Return project-instance by package_name"""
