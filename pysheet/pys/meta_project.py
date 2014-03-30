@@ -5,6 +5,7 @@ class MetaProject(type):
     """Metaclass for a project, which contains some convienience methods"""
 
     __ext__ = 'pys.proj'
+    __path__ = '.'
 
     def __init__(cls, name, bases, dct):
         super(MetaProject, cls).__init__(name, bases, dct)
@@ -13,7 +14,7 @@ class MetaProject(type):
     def all(self):
         """Return all projects as generator"""
         # setup
-        path = '.'
+        path = MetaProject.__path__
         files = os.listdir(path) 
         fullpath = lambda path, filename : os.path.join(path, filename)
 
@@ -23,3 +24,16 @@ class MetaProject(type):
         projects = (fullpath(path, p) for p in projects)
         projects = (p.Project(path=path) for path in projects)
         return projects
+
+    def __create_new_project_folder__(self, name):
+        """Create a new project path"""
+        foldername = '{0}.{1}'.format(name, MetaProject.__ext__)
+        path = os.path.join(MetaProject.__path__, foldername)
+        os.mkdir(path)
+        return path
+
+    def create_new_project(self, name):
+        """Create a new project (incl. folder structure) and return its
+        object representation"""
+        path = self.__create_new_project_folder__(name)
+        return p.Project(path=path)

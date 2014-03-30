@@ -1,3 +1,4 @@
+import os
 from meta_project import MetaProject
 
 class Project(object):
@@ -12,5 +13,13 @@ class Project(object):
         return '<{0}: {1}>'.format(self.path)
 
     @property
-    def json(self):
-        return self.path
+    def name(self):
+        """Return the project name"""
+        _, filename = os.path.split(self.path)
+        name, _, _ = filename.split('.')
+        return name
+
+    @property
+    def serialized(self):
+        """Return json representation of project"""
+        return self.name
