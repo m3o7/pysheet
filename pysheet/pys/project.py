@@ -13,6 +13,10 @@ class Project(object):
     def __repr__(self):
         return '<{0}: {1}>'.format(self.__class__.__name__, self.name)
 
+    def get_table(self, name):
+        """Return table-class"""
+        return (t for t in self.tables if t.name == name).next()
+
     @property
     def name(self):
         """Return the project name"""
@@ -36,3 +40,4 @@ class Project(object):
         # import all tables of a module
         tables = table.Table.import_tables(package_name=self.package_name)
         return tables
+

@@ -38,5 +38,10 @@ def create_table(project, table):
     table = Table.create_new_table(package_name=project, table_name=table)
     return return_json( table )
 
+@app.route('/project/<project>/<table>')
+def run_table(project, table):
+    table = Project.get(name=project).get_table(name=table)
+    return return_json(table().run())
+
 if __name__ == "__main__":
     app.run(debug=True)
