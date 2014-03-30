@@ -5,5 +5,12 @@ class Project(object):
 
     __metaclass__ = MetaProject
 
-    def __init__(self, name):
-        pass
+    def __init__(self, path):
+        self.path = path
+
+    def __repr__(self):
+        return '<{0}: {1}>'.format(self.path)
+
+    @property
+    def json(self):
+        return self.path
