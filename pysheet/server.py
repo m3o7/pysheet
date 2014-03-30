@@ -28,7 +28,8 @@ def create_project(name):
 
 @app.route('/project/<name>')
 def list_tables(name):
-    return return_json( Project.get(name=name).serialized )
+    tables = [t.serialized for t in Project.get(name=name).tables]
+    return return_json( tables )
 
 if __name__ == "__main__":
     app.run(debug=True)

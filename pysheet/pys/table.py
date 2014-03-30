@@ -1,2 +1,5 @@
+from meta_table import MetaTable
+
 class Table(object):
-    pass
+    
+    __metaclass__ = MetaTable

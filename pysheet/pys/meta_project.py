@@ -8,10 +8,10 @@ class MetaProject(type):
     __path__ = '.'
 
     # { name: class } - every class instance registers itself here
-    __project_classes__ = {}
+    __project_instances__ = {}
 
     @property
-    def all(self):
+    def all(cls):
         """Return all projects as generator"""
         # setup
         path = MetaProject.__path__
@@ -25,7 +25,7 @@ class MetaProject(type):
         projects = (p.Project(path=path) for path in projects)
         return projects
 
-    def __create_new_project_folder__(self, name):
+    def __create_new_project_folder__(cls, name):
         """Create a new project path"""
         foldername = '{0}_{1}'.format(name, MetaProject.__ext__)
         path = os.path.join(MetaProject.__path__, foldername)
@@ -36,16 +36,20 @@ class MetaProject(type):
         open(base_file, 'w').close() # create a new file
         return path
 
-    def create_new_project(self, name):
+    def create_new_project(cls, name):
         """Create a new project (incl. folder structure) and return its
         object representation"""
-        path = self.__create_new_project_folder__(name)
+        path = cls.__create_new_project_folder__(name)
         return p.Project(path=path)
 
-    def get(self, name):
+    def get(cls, name):
         """Return the Project by its name"""
-        return (p for p in self.all if p.name == name).next()
+        return (p for p in cls.all if p.name == name).next()
 
-    def register(self, klass):
+    def register(cls, klass):
         """Project-instances register itself here"""
-        self.__project_classes__[klass.package_name] = klass
+        cls.__project_instances__[klass.package_name] = klass
+
+    def get_project_klass(cls, package_name):
+        """Return project-instance by package_name"""
+        return cls.__project_instances__.get(package_name)
