@@ -2,8 +2,9 @@ import pkgutil
 import table as t
 from collections import defaultdict
 
-TABLE_CLASSES = defaultdict(set) # register all tables
 class MetaTable(type):
+
+    __table_classes__ = defaultdict(set) # register all tables
 
     def __new__(meta, name, bases, dct):
         """Create a new table class instance and register it"""
@@ -13,7 +14,7 @@ class MetaTable(type):
         # register the new table-(class) with its project-instance
         package_name, _ = klass.__module__.split('.')
         try:
-            TABLE_CLASSES[package_name].add(klass)
+            MetaTable.__table_classes__[package_name].add(klass)
         except AttributeError as err:
             # Table class has no corresponding project
             pass
@@ -21,7 +22,7 @@ class MetaTable(type):
 
     @property
     def all(cls):
-        return TABLE_CLASSES
+        return MetaTable.__table_classes__
 
     def import_tables(cls, package_name):
         """Return all tables of a module"""
@@ -33,7 +34,7 @@ class MetaTable(type):
             # force reload all modules - in case something has changed
             reload(module)
 
-        return TABLE_CLASSES[package_name]
+        return MetaTable.__table_classes__[package_name]
 
     @property
     def name(cls):
