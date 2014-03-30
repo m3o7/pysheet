@@ -9,16 +9,11 @@ class MetaTable(type):
 
     def __new__(meta, name, bases, dct):
         """Create a new table class instance and register it"""
-        module, _ = dct['__module__'].split('.')
         # create new table-class instance
         klass = super(MetaTable, meta).__new__(meta, name, bases, dct)
         # register the new table-(class) with its project-instance
         package_name, _ = klass.__module__.split('.')
-        try:
-            MetaTable.__table_classes__[package_name].add(klass)
-        except AttributeError as err:
-            # Table class has no corresponding project
-            pass
+        MetaTable.__table_classes__[package_name].add(klass)
         return klass
 
     def create_new_table(cls, package_name, table_name):
