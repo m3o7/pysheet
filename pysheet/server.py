@@ -1,20 +1,24 @@
-import flask as fl
+import flask
 import json
 from pys.project import Project
 from pys.table import Table
 
-app = fl.Flask(__name__, static_folder='static',template_folder='templates')
+app = flask.Flask(__name__, static_folder='static',template_folder='templates')
+
+def return_data(data, mimetype):
+    """Return flask-response with custom header - convienience function"""
+    return flask.Response(  response=data, 
+                            status=200,
+                            mimetype=mimetype)
 
 def return_json(data):
-    """Return flask-response with JSON header - convienience function"""
-    return fl.Response( response=json.dumps(data), 
-                        status=200,
-                        mimetype="application/json")
+    """Return respone with JSON header"""
+    return return_data(data=json.dumps(data), mimetype="application/json")
 
 @app.route('/')
 def serve_base():
     """Return basic-page scaffolding with javascript"""
-    return fl.render_template('base.html.template')
+    return flask.render_template('base.html.template')
 
 @app.route('/projects')
 def list_projects():
@@ -38,10 +42,23 @@ def create_table(project, table):
     table = Table.create_new_table(package_name=project, table_name=table)
     return return_json( table )
 
+@app.route('/project/<project>/<table>/source')
+def get_table_run_source(project, table):
+    table = Project.get(name=project).get_table(name=table)
+    return return_data( data=table().get_run_source(), 
+                        mimetype='text/x-script.phyton')
+
+@app.route('/project/<project>/<table>/source_full')
+def get_table_full_source(project, table):
+    table = Project.get(name=project).get_table(name=table)
+    return return_data( data=table().get_class_source(), 
+                        mimetype='text/x-script.phyton')
+
 @app.route('/project/<project>/<table>')
 def run_table(project, table):
     table = Project.get(name=project).get_table(name=table)
-    return return_json(table().run())
+    return return_json( table().run() )
+
 
 if __name__ == "__main__":
     app.run(debug=True)
