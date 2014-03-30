@@ -39,20 +39,40 @@ class Table(object):
         """Stub, needs to be implemented by its sub-classes"""
         raise NotImplementedError
 
-    def update_source(self, new_source):
-        """Upate the class-file with the new source-code"""
-        old_source, first_line = inspect.getsourcelines(self.run)
+    def __write_content_to_file__(self, filename, content):
+        """Write the contents into the given file"""
+        with open(filename, 'w') as _file:
+            _file.write(content)
+
+    def __update_table_methode_source__(self, new_source, method):
+        """Upate a method in a class-file with the new source-code"""
+        # retrieving the method-source, class-source and isolate the method-code
+        func = getattr(self, method)
+        old_source, first_line = inspect.getsourcelines(func)
         first_line -= 1
-        class_source = self.get_full_source()
-        full_path = inspect.getsourcefile(self.__class__)
+        class_source = self.get_source()
+        filename = inspect.getsourcefile(self.__class__)
         header_spaces = old_source[0].split('def')[0]
         new_source = ['{0}{1}'.format(header_spaces, l) for l in new_source.split('\n')]
 
+        # construct the new source for the entire file
         part_1 = ''.join(class_source[:first_line])
         part_2 = ''.join(class_source[first_line+len(old_source):])
-
         content = '{0}{1}\n{2}'.format(part_1, '\n'.join(new_source), part_2)
 
-        with open(full_path, 'w') as table_file:
-            table_file.write(content)
+        # write to disk
+        self.__write_content_to_file__(filename=filename, content=content)
+
+    def __update_table_source__(self, new_source):
+        """Update the source-code for the entire file"""
+        filename = inspect.getsourcefile(self.__class__)
+        self.__write_content_to_file__(filename=filename, content=new_source)
+
+    def update_source(self, new_source, method=None):
+        """Forward the source-code update"""
+        if method is None:
+            self.__update_table_source__(new_source=new_source)
+        else:
+            self.__update_table_methode_source__(   new_source=new_source, 
+                                                    method=method)
 
