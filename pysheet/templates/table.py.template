@@ -1,0 +1,7 @@
+from pys.table import Table
+
+class {{name}}(Table):
+    
+    def run(self, *args, **kwargs):
+        return []
+
