@@ -2,6 +2,7 @@ import pkgutil
 from collections import defaultdict
 import project
 import os
+import flask as fl
 
 class MetaTable(type):
 
@@ -19,10 +20,13 @@ class MetaTable(type):
     def create_new_table(cls, package_name, table_name):
         """Create new table file"""
         path = project.Project.get(package_name).path
-        filename = '{0}.py'.format(table_name)
+        filename = '{0}.py'.format(table_name.lower())
         fullpath = os.path.join(path, filename)
         with open(fullpath, 'w') as table:
-            pass
+            content = fl.render_template('table.py.template', **{
+                    'name' : table_name
+                })
+            table.write(content)
         return fullpath
 
     def import_tables(cls, package_name):

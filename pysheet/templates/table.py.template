@@ -1,0 +1,5 @@
+from pys.table import Table
+
+class {{name}}(Table):
+    pass
+
