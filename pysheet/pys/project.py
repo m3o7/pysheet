@@ -11,6 +11,7 @@ class Project(object):
         self.path = path
 
     def __repr__(self):
+        """Return a string-represenation of the project"""
         return '<{0}: {1}>'.format(self.__class__.__name__, self.name)
 
     def get_table(self, name):

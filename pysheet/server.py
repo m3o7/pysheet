@@ -48,10 +48,17 @@ def get_table_run_source(project, table):
     return return_data( data=table().get_run_source(), 
                         mimetype='text/x-script.phyton')
 
+@app.route('/project/<project>/<table>/update_source', methods=['POST'])
+def update_run_source(project, table):
+    table = Project.get(name=project).get_table(name=table)
+    new_source = flask.request.data
+    table().update_source(new_source=new_source)
+    return 'ok'
+
 @app.route('/project/<project>/<table>/source_full')
 def get_table_full_source(project, table):
     table = Project.get(name=project).get_table(name=table)
-    return return_data( data=table().get_class_source(), 
+    return return_data( data=table().get_full_source(), 
                         mimetype='text/x-script.phyton')
 
 @app.route('/project/<project>/<table>')
