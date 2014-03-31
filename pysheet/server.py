@@ -51,7 +51,7 @@ def get_table_method_source(project, table, method):
 @app.route('/project/<project>/<table>/_update_source/<method>', methods=['POST'])
 def update_table_method_source(project, table, method):
     table = Project.get(name=project).get_table(name=table)
-    new_source = flask.request.data
+    new_source = (k for k in flask.request.form).next()
     table().update_source(new_source=new_source, method=method)
     return 'ok'
 
@@ -64,7 +64,7 @@ def get_table_source(project, table):
 @app.route('/project/<project>/<table>/_update_source', methods=['POST'])
 def update_table_source(project, table):
     table = Project.get(name=project).get_table(name=table)
-    new_source = flask.request.data
+    new_source = (k for k in flask.request.form).next()
     table().update_source(new_source=new_source)
     return 'ok'
 

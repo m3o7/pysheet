@@ -31,6 +31,7 @@
                 color: #26AFD8;
                 height: 300px;
                 padding: 0px;
+                resize: none;
             }
 
             table {
@@ -50,23 +51,31 @@
 
         </style>
 
+        <!-- table data -->
+        <polymer-ajax   id="tableData" 
+                        url="/project/{{project}}/{{name}}/run" 
+                        response="{{data}}" 
+                        auto 
+                        handleAs="json">
+
+        <!-- load source code -->
+        <polymer-ajax   id="sourceCode" 
+                        url="/project/{{project}}/{{name}}/_source/run" 
+                        response="{{source}}" 
+                        auto>
+
+        <!-- send source code -->
+        <polymer-ajax   id="updateSourceCode" 
+                        url="/project/{{project}}/{{name}}/_update_source/run"
+                        body="{{source}}"
+                        method="POST">
+
         <template if="{{visible}}">
             <div class="left-menu">
                 <div class="menu-item" on-click="{{showMenu}}">back to menu</div>
-                <textarea>{{source}}</textarea>
+                <textarea value="{{source}}"></textarea>
+                <div class="menu-item" on-click="{{run}}">run</div>
             </div>
-            <!-- table data -->
-            <polymer-ajax   id="tableData" 
-                            url="/project/{{project}}/{{name}}/run" 
-                            response="{{data}}" 
-                            auto 
-                            handleAs="json">
-
-            <!-- source code -->
-            <polymer-ajax   id="sourceCode" 
-                            url="/project/{{project}}/{{name}}/_source/run" 
-                            response="{{source}}" 
-                            auto>
 
             <template if="{{showError}}">
                 <div>{{errorMsg}}</div>
@@ -105,6 +114,21 @@
             showMenu: function (event, detail, sender) {
                 // open the menu again
                 this.fire('open-menu');
+            },
+
+            sourceChanged: function(){
+                console.debug("source has changed");
+            },
+
+            run: function(event, detail, sender){
+                // update the source code
+                this.$.updateSourceCode.go();
+
+                // reload the data
+                this.$.tableData.go();
+
+                // reload the source code - to see if the old code was ok
+                this.$.sourceCode.go();
             },
 
         });
