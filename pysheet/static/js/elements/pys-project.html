@@ -1,7 +1,7 @@
 <link rel="import" href="/static/js/bower_components/polymer/polymer.html">
 <link rel="import" href="/static/js/bower_components/polymer-ajax/polymer-ajax.html">
 
-<polymer-element name="pys-project" attributes="name projects showTables tables" script>
+<polymer-element name="pys-project" attributes="name projects showTables tables">
     
     <template>
         <style type="text/css">
@@ -14,6 +14,7 @@
                 outline:            none !important;
                 padding:            0;
                 width:              100%;
+                font-family:        arial;
             }
             button:hover {
                 background-color:   #26AFD8;
@@ -24,8 +25,6 @@
                 margin: auto;
                 min-width:  300px;
                 width:      25%;
-            }
-            .table {
             }
             .end {
                 background-color: rgba(255,255,255,0.5);
@@ -55,10 +54,10 @@
             tables: [],
 
             openProject: function(event, detail, sender){
-                console.debug('opening project ' + this.name);
                 // get the tables
                 this.showTables = !this.showTables;
                 if (this.showTables) {
+                    console.debug('opening project ' + this.name);
                     this.$.tables.go();
                 };
             },
@@ -66,6 +65,7 @@
             openTable: function(event, detail, sender){
                 var tableName = event.target.getAttribute('id');
                 console.debug('open table: ' + tableName);
+                this.fire('open-table', {name: tableName, project: this.name});
             },
 
             getNewTableName: function(event, detail, sender){

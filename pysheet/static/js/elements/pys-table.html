@@ -1,0 +1,38 @@
+<link rel="import" href="/static/js/bower_components/polymer/polymer.html">
+
+<polymer-element name="pys-table" attributes="name project visible">
+    
+    <template>
+
+        <style type="text/css">
+            .back {
+                background-color: #FFFFFF;
+                height: 50px;
+                width: 200px;
+                line-height: 50px;
+                color: #26AFD8;
+                text-align: center;
+            }
+        </style>
+
+        <template if="{{visible}}">
+            <div class="back" on-click="{{showMenu}}">back to menu</div>
+            {{name}}
+        </template>
+    </template>
+
+    <script>
+        Polymer('pys-table', {
+            update: function(){
+                // load table data
+                console.log(this.project + '.' + this.name + ' is ready');
+            },
+
+            showMenu: function (event, detail, sender) {
+                // open the menu again
+                this.fire('open-menu');
+            },
+        });
+    </script>
+
+</polymer-element>

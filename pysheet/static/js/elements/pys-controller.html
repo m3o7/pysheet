@@ -2,8 +2,9 @@
 <link rel="import" href="/static/js/bower_components/polymer-ajax/polymer-ajax.html">
 <link rel="import" href="/static/js/elements/pys-project.html">
 <link rel="import" href="/static/js/elements/pys-dialog.html">
+<link rel="import" href="/static/js/elements/pys-table.html">
 
-<polymer-element name="pys-controller" attributes="projects" noscript>
+<polymer-element name="pys-controller" attributes="projects tableName projectName">
     
     <template>
         <style type="text/css">
@@ -38,16 +39,43 @@
                     content="What is the new project name?" 
                     response="{{newProjectName}}"></pys-dialog>
 
-        <div class="project-box">
-            <template repeat="{{ project in projects }}">   
-                <pys-project name="{{project}}"></pys-project>
-            </template>
-            <div class="new-project" on-click="{{getNewProjectName}}">+</div>
-        </div>
+        <!-- menu view -->
+        <template if="{{showMenuView}}">
+            <div class="project-box">
+                <template repeat="{{ project in projects }}">   
+                    <pys-project name="{{project}}"></pys-project>
+                </template>
+                <div class="new-project" on-click="{{getNewProjectName}}">+</div>
+            </div>
+        </template>
+
+        <!-- spreadshead/table view -->
+        <pys-table id="table" name="{{tableName}}" project="{{projectName}}" visible="{{showTableView}}"></pys-table>
     </template>
 
     <script>
         Polymer('pys-controller', {
+            showMenuView: true,
+            showTableView: false,
+
+            ready: function(){
+                var me = this;
+                this.addEventListener('open-table', function(e){
+                    // switching views
+                    this.showMenuView = false;
+                    this.showTableView = true;
+
+                    // requesting table data
+                    this.tableName = e.detail.name;
+                    this.projectName = e.detail.project;
+                    this.$.table.update();
+                });
+
+                this.addEventListener('open-menu', function(e){
+                    this.showMenuView = true;
+                    this.showTableView = false;
+                });
+            },
 
             createNewProject: function(newProjectName){
                 this.$.newProjectRequest.method = "POST";
