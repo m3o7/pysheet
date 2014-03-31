@@ -41,9 +41,9 @@
         <template if="{{ showTables }}">
             <div class="table-box">
                 <template repeat="{{ table in tables }}">
-                    <button class="table">{{ table }}</button>
+                    <button class="table" on-click="{{openTable}}" id="{{ table }}">{{ table }}</button>
                 </template>
-                <button class="table end">+</button>
+                <button class="table end" on-click="{{getNewTableName}}">+</button>
             </div>
         </template>
 
@@ -61,7 +61,16 @@
                 if (this.showTables) {
                     this.$.tables.go();
                 };
-            }
+            },
+
+            openTable: function(event, detail, sender){
+                var tableName = event.target.getAttribute('id');
+                console.debug('open table: ' + tableName);
+            },
+
+            getNewTableName: function(event, detail, sender){
+                console.debug('getting new table name');
+            },
         });
     </script>
 
