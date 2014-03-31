@@ -1,7 +1,35 @@
 <link rel="import" href="/static/js/bower_components/polymer/polymer.html">
 
-<polymer-element name="pys-project" attributes="name" noscript>
+<polymer-element name="pys-project" attributes="name" script>
+    
     <template>
-        <span>project: {{name}}</span>
+        <style type="text/css">
+            button {
+                background-color:   #FFFFFF;
+                border:             none;
+                color:              #26AFD8;
+                font-size:          20px;
+                height:             50px;
+                outline:            none !important;
+                padding:            0;
+                width:              100%;
+            }
+            button:hover {
+                background-color:   #26AFD8;
+                border:             1px solid #FFFFFF;
+                color:              #FFFFFF;
+            }
+        </style>
+
+        <button on-click="{{openProject}}">{{name}}</button>
     </template>
+
+    <script>
+        Polymer('pys-project', {
+            openProject: function(event, detail, sender){
+                console.debug('opening project ' + this.name);
+            }
+        });
+    </script>
+
 </polymer-element>

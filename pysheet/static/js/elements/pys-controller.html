@@ -5,10 +5,44 @@
 <polymer-element name="pys-controller" attributes="projects" noscript>
     
     <template>
+        <style type="text/css">
+            .project-box {
+                margin:     auto;
+                min-width:  300px;
+                width:      25%;
+            }
+
+            .new-project {
+                background-color:   rgba(255,255,255,0.5);
+                height:             50px;
+                line-height:        50px;
+                text-align:         center;
+                width:              100%;
+                font-size:          20px;
+            }
+
+            .new-project:hover {
+                background-color:   #26AFD8;
+                color:              #FFFFFF;
+            }
+
+        </style>
+        
         <polymer-ajax url="/projects" auto response="{{projects}}" handleAs="json">
-        <template repeat="{{ project in projects }}">   
-            <pys-project name="{{project}}"></pys-project>
-        </template>
+        <div class="project-box">
+            <template repeat="{{ project in projects }}">   
+                <pys-project name="{{project}}"></pys-project>
+            </template>
+            <div class="new-project" on-click="{{createNewProject}}">+</div>
+        </div>
     </template>
+
+    <script>
+        Polymer('pys-controller', {
+            createNewProject: function(event, detail, sender){
+                console.debug('create new project');
+            }
+        });
+    </script>
 
 </polymer-element>
