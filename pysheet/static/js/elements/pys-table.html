@@ -1,22 +1,39 @@
 <link rel="import" href="/static/js/bower_components/polymer/polymer.html">
 <link rel="import" href="/static/js/bower_components/polymer-ajax/polymer-ajax.html">
 
-<polymer-element name="pys-table" attributes="name project visible data errorMsg showError">
+<polymer-element name="pys-table" attributes="name project visible data errorMsg showError source">
     
     <template>
 
         <style type="text/css">
-            .back {
+            .left-menu {
+                float: left;
+                width: 20%;
+                min-width: 250px;
+                margin-right: 10px;
+            }
+
+            .menu-item {
+                display: inline-block;
                 background-color: #FFFFFF;
                 height: 50px;
-                width: 200px;
+                width: 100%;
                 line-height: 50px;
                 color: #26AFD8;
                 text-align: center;
+                margin-bottom: 10px;
+            }
+
+            textarea {
+                width: 100%;
+                border: none;
+                background-color: #fff;
+                color: #26AFD8;
+                height: 300px;
+                padding: 0px;
             }
 
             table {
-                margin: auto;
             }
 
             table, th, td{
@@ -29,22 +46,32 @@
             }
 
             .table-box {
-                width: 100%;
             }
 
         </style>
 
         <template if="{{visible}}">
-            <div class="back" on-click="{{showMenu}}">back to menu</div>
+            <div class="left-menu">
+                <div class="menu-item" on-click="{{showMenu}}">back to menu</div>
+                <textarea>{{source}}</textarea>
+            </div>
+            <!-- table data -->
             <polymer-ajax   id="tableData" 
                             url="/project/{{project}}/{{name}}/run" 
                             response="{{data}}" 
                             auto 
                             handleAs="json">
 
+            <!-- source code -->
+            <polymer-ajax   id="sourceCode" 
+                            url="/project/{{project}}/{{name}}/_source/run" 
+                            response="{{source}}" 
+                            auto>
+
             <template if="{{showError}}">
                 <div>{{errorMsg}}</div>
             </template>
+
             <div class="table-box">
                 <table>
                     <template repeat="{{ row in data }}">
@@ -75,13 +102,11 @@
                 });
             },
 
-            dataChanged: function(){
-            },
-
             showMenu: function (event, detail, sender) {
                 // open the menu again
                 this.fire('open-menu');
             },
+
         });
     </script>
 
