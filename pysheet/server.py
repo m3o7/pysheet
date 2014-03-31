@@ -18,7 +18,7 @@ def return_json(data):
 @app.route('/')
 def serve_base():
     """Return basic-page scaffolding with javascript"""
-    return flask.render_template('base.html.template')
+    return app.send_static_file('index.html')
 
 @app.route('/projects')
 def list_projects():
