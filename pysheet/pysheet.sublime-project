@@ -1,0 +1,10 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": "/Users/i822913/projects/pysheet",
+            "folder_exclude_patterns": ["bower_components"]
+		}
+	]
+}
