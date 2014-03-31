@@ -1,6 +1,7 @@
 <link rel="import" href="/static/js/bower_components/polymer/polymer.html">
+<link rel="import" href="/static/js/bower_components/polymer-ajax/polymer-ajax.html">
 
-<polymer-element name="pys-project" attributes="name" script>
+<polymer-element name="pys-project" attributes="name projects showTables tables" script>
     
     <template>
         <style type="text/css">
@@ -19,15 +20,47 @@
                 border:             1px solid #FFFFFF;
                 color:              #FFFFFF;
             }
+            .table-box {
+                margin: auto;
+                min-width:  300px;
+                width:      25%;
+            }
+            .table {
+            }
+            .end {
+                background-color: rgba(255,255,255,0.5);
+                margin-bottom: 10px;
+                color: #FFFFFF;
+            }
         </style>
 
         <button on-click="{{openProject}}">{{name}}</button>
+
+        <!-- to load the tables -->
+        <polymer-ajax id="tables" url="/project/{{name}}" response="{{tables}}" handleAs="json">
+        <template if="{{ showTables }}">
+            <div class="table-box">
+                <template repeat="{{ table in tables }}">
+                    <button class="table">{{ table }}</button>
+                </template>
+                <button class="table end">+</button>
+            </div>
+        </template>
+
     </template>
 
     <script>
         Polymer('pys-project', {
+            showTables: false,
+            tables: [],
+
             openProject: function(event, detail, sender){
                 console.debug('opening project ' + this.name);
+                // get the tables
+                this.showTables = !this.showTables;
+                if (this.showTables) {
+                    this.$.tables.go();
+                };
             }
         });
     </script>
