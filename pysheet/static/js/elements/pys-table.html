@@ -16,13 +16,20 @@
             }
 
             table {
-                width: 100%;
-                margin-top: 10px;
+                margin: auto;
             }
 
             table, th, td{
                 border-collapse:collapse;
                 border: 1px solid #fff;
+            }
+
+            th, td {
+                min-width: 100px;
+            }
+
+            .table-box {
+                width: 100%;
             }
 
         </style>
@@ -38,16 +45,17 @@
             <template if="{{showError}}">
                 <div>{{errorMsg}}</div>
             </template>
-            <table>
-                <template repeat="{{ row in data }}">
-                <tr>
-                    <template repeat="{{ field in row }}">
-                    <td>{{field}}</td>
+            <div class="table-box">
+                <table>
+                    <template repeat="{{ row in data }}">
+                    <tr>
+                        <template repeat="{{ field in row }}">
+                        <td>{{field}}</td>
+                        </template>
+                    </tr>
                     </template>
-                </tr>
-                </template>
-            </table>
-
+                </table>
+            </div>
         </template>
     </template>
 
