@@ -26,7 +26,8 @@ class MetaProject(type):
 
     def __create_new_project_folder__(cls, name):
         """Create a new project path"""
-        path = os.path.join(MetaProject.__path__, name)
+        package_name = "{0}{1}".format(name, MetaProject.__ext__)
+        path = os.path.join(MetaProject.__path__, package_name)
 
         # TODO: catch, so user can be notified if project already exists
         os.mkdir(path) # create a new folder

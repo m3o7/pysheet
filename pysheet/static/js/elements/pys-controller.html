@@ -1,6 +1,7 @@
 <link rel="import" href="/static/js/bower_components/polymer/polymer.html">
 <link rel="import" href="/static/js/bower_components/polymer-ajax/polymer-ajax.html">
 <link rel="import" href="/static/js/elements/pys-project.html">
+<link rel="import" href="/static/js/elements/pys-dialog.html">
 
 <polymer-element name="pys-controller" attributes="projects" noscript>
     
@@ -28,20 +29,48 @@
 
         </style>
         
-        <polymer-ajax url="/projects" auto response="{{projects}}" handleAs="json">
+        <!-- initial loader -->
+        <polymer-ajax id="projects" url="/projects" auto response="{{projects}}" handleAs="json">
+        <!-- create new projects -->
+        <polymer-ajax id="newProjectRequest" auto response="{{newProject}}">
+
+        <pys-dialog id="dialog" 
+                    content="What is the new project name?" 
+                    response="{{newProjectName}}"></pys-dialog>
+
         <div class="project-box">
             <template repeat="{{ project in projects }}">   
                 <pys-project name="{{project}}"></pys-project>
             </template>
-            <div class="new-project" on-click="{{createNewProject}}">+</div>
+            <div class="new-project" on-click="{{getNewProjectName}}">+</div>
         </div>
     </template>
 
     <script>
         Polymer('pys-controller', {
-            createNewProject: function(event, detail, sender){
+
+            createNewProject: function(newProjectName){
+                this.$.newProjectRequest.method = "POST";
+                this.$.newProjectRequest.url = '/create_project/' + newProjectName;
+            },
+
+            getNewProjectName: function(event, detail, sender){
                 console.debug('create new project');
-            }
+                this.$.dialog.visible = true;
+
+                // listen for input
+                var me = this;
+                this.$.dialog.addEventListener('confirmed-entry', function(e){
+                    var newProjectName = e.detail.content;
+                    me.createNewProject(newProjectName);                    
+                });
+            },
+
+            newProjectChanged: function(event, detail, sender){
+                console.debug('new project was created: ' + this.newProject);
+                // refresh the project list
+                this.$.projects.go()
+            },
         });
     </script>
 

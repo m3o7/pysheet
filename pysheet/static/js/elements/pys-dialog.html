@@ -1,0 +1,38 @@
+<link rel="import" href="/static/js/bower_components/polymer/polymer.html">
+
+<polymer-element name="pys-dialog" attributes="content visible response" script>
+    
+    <template>
+        <style type="text/css">
+        </style>
+
+        <template if="{{ visible }}">
+            <div>
+                <input  type="text" 
+                        placeholder="{{content}}" 
+                        value="{{response}}" 
+                        on-keypress="{{keyPressed}}">
+            </div>
+        </template>
+    </template>
+
+    <script>
+        Polymer('pys-dialog', {
+            visible: false,
+            response: "",
+
+            keyPressed: function(event, detail, sender){
+                if (event.charCode === 13) {
+                    // hit ENTER -> close the dialog
+                    this.fire('confirmed-entry', {content: this.response});
+                    this.visible = false;
+                };
+            },
+
+            openProject: function(event, detail, sender){
+                console.debug('opening project ' + this.name);
+            }
+        });
+    </script>
+
+</polymer-element>

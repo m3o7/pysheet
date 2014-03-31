@@ -30,7 +30,7 @@ def list_projects():
 def create_project(name):
     """Create a new project and return its name"""
     project = Project.create_new_project(name=name)
-    return return_json( project.serialized )
+    return project.serialized
 
 @app.route('/project/<name>')
 def list_tables(name):
