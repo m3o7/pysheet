@@ -1,6 +1,7 @@
 <link rel="import" href="/static/js/bower_components/polymer/polymer.html">
+<link rel="import" href="/static/js/bower_components/polymer-ajax/polymer-ajax.html">
 
-<polymer-element name="pys-table" attributes="name project visible">
+<polymer-element name="pys-table" attributes="name project visible data errorMsg showError">
     
     <template>
 
@@ -13,19 +14,60 @@
                 color: #26AFD8;
                 text-align: center;
             }
+
+            table {
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            table, th, td{
+                border-collapse:collapse;
+                border: 1px solid #fff;
+            }
+
         </style>
 
         <template if="{{visible}}">
             <div class="back" on-click="{{showMenu}}">back to menu</div>
-            {{name}}
+            <polymer-ajax   id="tableData" 
+                            url="/project/{{project}}/{{name}}/run" 
+                            response="{{data}}" 
+                            auto 
+                            handleAs="json">
+
+            <template if="{{showError}}">
+                <div>{{errorMsg}}</div>
+            </template>
+            <table>
+                <template repeat="{{ row in data }}">
+                <tr>
+                    <template repeat="{{ field in row }}">
+                    <td>{{field}}</td>
+                    </template>
+                </tr>
+                </template>
+            </table>
+
         </template>
     </template>
 
     <script>
         Polymer('pys-table', {
-            update: function(){
-                // load table data
-                console.log(this.project + '.' + this.name + ' is ready');
+            showError: false,
+
+            ready: function(){
+                var me = this;
+                this.addEventListener('polymer-error', function(){
+                    me.data = [];
+                    me.errorMsg = 'loading error';
+                    me.showError = true;
+                });
+                this.addEventListener('polymer-response', function(){
+                    me.showError = false;
+                });
+            },
+
+            dataChanged: function(){
             },
 
             showMenu: function (event, detail, sender) {
