@@ -1,0 +1,14 @@
+<link rel="import" href="/static/js/bower_components/polymer/polymer.html">
+<link rel="import" href="/static/js/bower_components/polymer-ajax/polymer-ajax.html">
+<link rel="import" href="/static/js/elements/pys-project.html">
+
+<polymer-element name="pys-controller" attributes="projects" noscript>
+    
+    <template>
+        <polymer-ajax url="/projects" auto response="{{projects}}" handleAs="json">
+        <template repeat="{{ project in projects }}">   
+            <pys-project name="{{project}}"></pys-project>
+        </template>
+    </template>
+
+</polymer-element>
