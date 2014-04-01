@@ -54,17 +54,22 @@ class Table(object):
         """Upate a method in a class-file with the new source-code"""
         # retrieving the method-source, class-source and isolate the method-code
         func = getattr(self, method)
-        old_source, first_line = inspect.getsourcelines(func)
+        old_method_source, first_line = inspect.getsourcelines(func)
+        old_lines = len(old_method_source)
         first_line -= 1
-        class_source = self.get_source()
         filename = inspect.getsourcefile(self.__class__)
-        header_spaces = old_source[0].split('def')[0]
-        new_source = ['{0}{1}'.format(header_spaces, l) for l in new_source.split('\n')]
+        with open(filename, 'r') as old_source_file:
+            old_source = old_source_file.readlines()
+
+        header_spaces = old_method_source[0].split('def')[0]
+        # adding the leading spaces - assumption: SPACES, not TABS are used
+        new_method_source = ['{0}{1}'.format(header_spaces, l) for l in new_source.split('\n')]
 
         # construct the new source for the entire file
-        part_1 = ''.join(class_source[:first_line])
-        part_2 = ''.join(class_source[first_line+len(old_source):])
-        content = '{0}{1}{2}'.format(part_1, '\n'.join(new_source), part_2)
+        part_1 = ''.join(old_source[:first_line])
+        part_2 = '\n'.join(new_method_source)
+        part_3 = ''.join(old_source[first_line+old_lines:])
+        content = '{0}{1}\n\n{2}'.format(part_1, part_2, part_3)
 
         # write to disk
         self.__write_content_to_file__(filename=filename, content=content)

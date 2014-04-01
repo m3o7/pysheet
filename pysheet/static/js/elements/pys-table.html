@@ -67,13 +67,13 @@
 
         <!-- load source code -->
         <polymer-ajax   id="sourceCode" 
-                        url="/project/{{project}}/{{name}}/_source/run" 
+                        url="/project/{{project}}/{{name}}/_source" 
                         response="{{source}}" 
                         auto>
 
         <!-- send source code -->
         <polymer-ajax   id="updateSourceCode" 
-                        url="/project/{{project}}/{{name}}/_update_source/run"
+                        url="/project/{{project}}/{{name}}/_update_source"
                         body="{{source}}"
                         method="POST"
                         on-polymer-response="{{sourceUpdated}}"
