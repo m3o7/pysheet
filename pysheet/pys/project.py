@@ -16,6 +16,7 @@ class Project(object):
 
     def get_table(self, name):
         """Return table-class"""
+        # in-efficient search, but enforces the reloading the the modules
         return (t for t in self.tables if t.name == name).next()
 
     @property

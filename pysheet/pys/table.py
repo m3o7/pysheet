@@ -1,5 +1,6 @@
 from meta_table import MetaTable
 import inspect
+import os
 
 class Table(object):
     
@@ -43,6 +44,11 @@ class Table(object):
         """Write the contents into the given file"""
         with open(filename, 'w') as _file:
             _file.write(content)
+        # remove *.pyc file
+        try:
+            os.remove("{0}c".format(filename))
+        except OSError:
+            pass
 
     def __update_table_methode_source__(self, new_source, method):
         """Upate a method in a class-file with the new source-code"""
@@ -58,7 +64,7 @@ class Table(object):
         # construct the new source for the entire file
         part_1 = ''.join(class_source[:first_line])
         part_2 = ''.join(class_source[first_line+len(old_source):])
-        content = '{0}{1}\n{2}'.format(part_1, '\n'.join(new_source), part_2)
+        content = '{0}{1}{2}'.format(part_1, '\n'.join(new_source), part_2)
 
         # write to disk
         self.__write_content_to_file__(filename=filename, content=content)

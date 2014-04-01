@@ -42,18 +42,22 @@ def create_table(project, table):
     table = Table.create_new_table(package_name=project, table_name=table)
     return return_json( table )
 
-@app.route('/project/<project>/<table>/_source/<method>')
-def get_table_method_source(project, table, method):
+def __get_table_method_source__(project, table, method):
     table = Project.get(name=project).get_table(name=table)
-    return return_data( data=table().get_source(method=method), 
+    return table().get_source(method=method)
+
+@app.route('/project/<project>/<table>/_source/<method>')
+def get_table_method_source(**kwargs):
+    return return_data( data=__get_table_method_source__(**kwargs), 
                         mimetype='text/x-script.phyton')
 
 @app.route('/project/<project>/<table>/_update_source/<method>', methods=['POST'])
 def update_table_method_source(project, table, method):
-    table = Project.get(name=project).get_table(name=table)
+    _table = Project.get(name=project).get_table(name=table)
     new_source = (k for k in flask.request.form).next()
-    table().update_source(new_source=new_source, method=method)
-    return 'ok'
+    _table().update_source(new_source=new_source, method=method)
+    # reload the data and serve it - to verify that the changes took effect
+    return '\n'.join(__get_table_method_source__(project=project, table=table, method=method))
 
 @app.route('/project/<project>/<table>/_source')
 def get_table_source(project, table):
@@ -63,17 +67,23 @@ def get_table_source(project, table):
 
 @app.route('/project/<project>/<table>/_update_source', methods=['POST'])
 def update_table_source(project, table):
-    table = Project.get(name=project).get_table(name=table)
+    _table = Project.get(name=project).get_table(name=table)
     new_source = (k for k in flask.request.form).next()
-    table().update_source(new_source=new_source)
-    return 'ok'
+    # cleaning the source
+    new_source = new_source.strip()
+    _table().update_source(new_source=new_source)
+    return '\n'.join(__get_table_method_source__(project=project, table=table))
 
 @app.route('/project/<project>/<table>/<method>')
 def execute_table_method(project, table, method):
     table = Project.get(name=project).get_table(name=table)
     table = table()
     func = getattr(table, method)
-    return return_json( func() )
+    try:
+        return return_json( func() )
+    except TypeError:
+        #  in case there was a generator returned
+        return return_json( list(func()) )
 
 
 if __name__ == "__main__":

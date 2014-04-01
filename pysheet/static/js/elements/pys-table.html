@@ -42,17 +42,17 @@
             }
 
             textarea:focus {
-                outline-offset:     -2px;
-                outline:            2px solid rgba(38, 175, 216, 0.5);
+                background-color: rgba(255, 255, 255, 0.9);
+                outline: none;
             }
 
             table {
-                width:              100%;
+                width:  100%;
             }
 
             table, th, td{
-                border-collapse:collapse;
-                border: 1px solid #fff;
+                border-collapse:    collapse;
+                border:             1px solid #fff;
             }
 
 
@@ -75,7 +75,9 @@
         <polymer-ajax   id="updateSourceCode" 
                         url="/project/{{project}}/{{name}}/_update_source/run"
                         body="{{source}}"
-                        method="POST">
+                        method="POST"
+                        on-polymer-response="{{sourceUpdated}}"
+                        response="{{source}">
 
         <template if="{{visible}}">
             <div class="table-outer-frame">
@@ -141,14 +143,16 @@
             },
 
             run: function(event, detail, sender){
+                var me = this;
                 // update the source code
                 this.$.updateSourceCode.go();
+                // clean up the data and indicate the load process
+                this.data = [];
+            },
 
+            sourceUpdated: function(){
                 // reload the data
                 this.$.tableData.go();
-
-                // reload the source code - to see if the old code was ok
-                this.$.sourceCode.go();
             },
 
         });
