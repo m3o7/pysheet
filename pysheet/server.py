@@ -54,7 +54,9 @@ def get_table_method_source(**kwargs):
 @app.route('/project/<project>/<table>/_update_source/<method>', methods=['POST'])
 def update_table_method_source(project, table, method):
     _table = Project.get(name=project).get_table(name=table)
-    new_source = (k for k in flask.request.form).next()
+    new_source = flask.request.data
+    # cleaning the source
+    new_source = new_source.strip()
     _table().update_source(new_source=new_source, method=method)
     # reload the data and serve it - to verify that the changes took effect
     return '\n'.join(__get_table_method_source__(project=project, table=table, method=method))
@@ -68,7 +70,7 @@ def get_table_source(project, table):
 @app.route('/project/<project>/<table>/_update_source', methods=['POST'])
 def update_table_source(project, table):
     _table = Project.get(name=project).get_table(name=table)
-    new_source = (k for k in flask.request.form).next()
+    new_source = flask.request.data
     # cleaning the source
     new_source = new_source.strip()
     _table().update_source(new_source=new_source)
